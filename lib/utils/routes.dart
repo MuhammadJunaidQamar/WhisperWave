@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:WhisperWave/views/screens/home_screen.dart';
-import 'package:WhisperWave/views/screens/auth/signin_screen.dart';
-import 'package:WhisperWave/views/screens/auth/signup_screen.dart';
+import 'package:whisperwave/views/screens/home_screen.dart';
+import 'package:whisperwave/views/screens/auth/signin_screen.dart';
+import 'package:whisperwave/views/screens/auth/signup_screen.dart';
 import '../views/screens/chat_screen.dart';
 import '../views/screens/welcome/splash_screen.dart';
 import 'routes_name.dart';

@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:random_string/random_string.dart';
+import 'package:whisperwave/service/database.dart';
+import 'package:whisperwave/service/shared_pref.dart';
+import 'package:whisperwave/utils/routes_name.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -17,7 +22,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController nameEditingController = new TextEditingController();
 
   final _formkey = GlobalKey<FormState>();
-  registration() async {}
+  registration() async {
+    if (password != null && password == confirmPassword) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+        String id = randomAlphaNumeric(10);
+        Map<String, dynamic> userInfoMap = {
+          'Name': nameEditingController,
+          "E-mai": emailEditingController.text,
+          'UserName': emailEditingController.text.replaceAll("@gmail.com", ""),
+          'Photo': "",
+          'Id': id,
+        };
+        await DatabaseMethods().addUserDetails(userInfoMap, id);
+        await sharedPreferenceHelper().savedUserId(id);
+        await sharedPreferenceHelper().savedUserName(
+            emailEditingController.text.replaceAll("@gmail.com", ""));
+        await sharedPreferenceHelper()
+            .savedUserEmail(emailEditingController.text);
+        await sharedPreferenceHelper().savedUserPic("");
+        await sharedPreferenceHelper()
+            .savedUserDisplayName(nameEditingController.text);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Registered Successfully',
+              style: TextStyle(
+                fontSize: 20.0,
+              ),
+            ),
+          ),
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Password provided is too weak',
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+              ),
+            ),
+          );
+        } else if (e.code == 'email-already-in-use') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.orangeAccent,
+              content: Text(
+                'Account already exists',
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+              ),
+            ),
+          );
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -249,12 +314,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       fontSize: 16.0,
                                     ),
                                   ),
-                                  Text(
-                                    ' SignIn',
-                                    style: TextStyle(
-                                      color: Color(0xFF7F30FE),
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w500,
+                                  InkWell(
+                                    onTap: () => Navigator.pushNamed(
+                                        context, RouteName.signInScreen),
+                                    child: Text(
+                                      ' SignIn',
+                                      style: TextStyle(
+                                        color: Color(0xFF7F30FE),
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ],

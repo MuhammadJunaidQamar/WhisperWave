@@ -1,9 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:WhisperWave/utils/routes.dart';
+import 'package:whisperwave/firebase_options.dart';
+import 'package:whisperwave/utils/routes.dart';
 import 'utils/routes_name.dart';
 
 void main() async {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    runApp(const MyApp());
+  } catch (e) {
+    print('Error initializing Firebase: $e');
+  }
 }
 
 class MyApp extends StatelessWidget {

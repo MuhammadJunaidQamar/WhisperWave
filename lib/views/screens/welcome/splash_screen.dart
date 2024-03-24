@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:WhisperWave/controllers/splash_screen_controller.dart';
-import 'package:WhisperWave/views/widgets/logo.dart';
+import 'package:whisperwave/controllers/splash_screen_controller.dart';
+import 'package:whisperwave/views/widgets/logo.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
