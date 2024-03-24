@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whisperwave/views/screens/auth/forgot_password_screen.dart';
 import 'package:whisperwave/views/screens/home_screen.dart';
 import 'package:whisperwave/views/screens/auth/signin_screen.dart';
 import 'package:whisperwave/views/screens/auth/signup_screen.dart';
@@ -20,6 +21,10 @@ class Routes {
 
       case RouteName.chatScreen:
         return MaterialPageRoute(builder: (context) => const ChatScreen());
+
+      case RouteName.forgotPasswordScreen:
+        return MaterialPageRoute(
+            builder: (context) => const ForgotPasswordScreen());
 
       case RouteName.signUpScreen:
         return MaterialPageRoute(builder: (context) => const SignUpScreen());

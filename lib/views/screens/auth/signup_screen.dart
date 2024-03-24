@@ -23,16 +23,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final _formkey = GlobalKey<FormState>();
   registration() async {
-    if (password != null && password == confirmPassword) {
+    if (password.isNotEmpty && password == confirmPassword) {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
         String id = randomAlphaNumeric(10);
         Map<String, dynamic> userInfoMap = {
-          'Name': nameEditingController,
-          "E-mai": emailEditingController.text,
+          'Name': nameEditingController.text,
+          "Email": emailEditingController.text,
           'UserName': emailEditingController.text.replaceAll("@gmail.com", ""),
-          'Photo': "",
+          // 'Photo': "",
           'Id': id,
         };
         await DatabaseMethods().addUserDetails(userInfoMap, id);
@@ -41,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             emailEditingController.text.replaceAll("@gmail.com", ""));
         await sharedPreferenceHelper()
             .savedUserEmail(emailEditingController.text);
-        await sharedPreferenceHelper().savedUserPic("");
+        // await sharedPreferenceHelper().savedUserPic("");
         await sharedPreferenceHelper()
             .savedUserDisplayName(nameEditingController.text);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -54,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         );
+        Navigator.pushNamed(context, RouteName.homeScreen);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -86,6 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         child: Stack(
           children: [
@@ -149,8 +151,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        key: _formkey,
                         child: Form(
+                          key: _formkey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -347,8 +349,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 confirmPasswordEditingController.text;
                           },
                         );
+                        registration();
                       }
-                      registration();
                     },
                     child: Center(
                       child: Container(
