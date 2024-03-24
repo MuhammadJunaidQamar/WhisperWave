@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "945899818415",
+    "project_id": "whisper-wave-5c2d7",
+    "storage_bucket": "whisper-wave-5c2d7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945899818415:android:1f194e2a079d18a451335a",
+        "android_client_info": {
+          "package_name": "com.example.whisperwave"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYq2NYxpx3Nzq_3HehOH3NDVN-z79zzas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

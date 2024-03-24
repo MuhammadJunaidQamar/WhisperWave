@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:WhisperWave/utils/routes.dart';
 import 'utils/routes_name.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 

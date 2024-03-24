@@ -8,7 +8,7 @@ import '../utils/routes_name.dart';
 class SplashScreenController {
   void isLogin(context) {
     Timer(
-      const Duration(seconds: 100),
+      const Duration(seconds: 5),
       () => Navigator.pushReplacement(
         context,
         Routes.generateRoute(
