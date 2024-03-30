@@ -14,7 +14,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    splashScreen.isLogin(context);
+    navigateUser();
+  }
+
+  Future<void> navigateUser() async {
+    await splashScreen.isLogin(context);
   }
 
   @override

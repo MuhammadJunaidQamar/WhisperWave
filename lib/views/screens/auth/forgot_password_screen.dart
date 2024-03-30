@@ -18,7 +18,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           backgroundColor: Colors.orangeAccent,
           content: Text(
             'Password ReSet E-mail has been sent',
@@ -29,7 +29,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } on FirebaseException catch (e) {
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             backgroundColor: Colors.orangeAccent,
             content: Text(
               'No User Found For That E-Mail',
@@ -43,7 +43,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             backgroundColor: Colors.orangeAccent,
             content: Text(
               e.toString(),
-              style: TextStyle(fontSize: 18.0, color: Colors.black),
+              style: const TextStyle(fontSize: 18.0, color: Colors.black),
             ),
           ),
         );
@@ -62,7 +62,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               height: MediaQuery.of(context).size.height / 3.5,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [
                     Color(0xFF7F30FE),
                     Color(0xFF6380FB),
@@ -82,7 +82,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               padding: const EdgeInsets.only(top: 70.0),
               child: Column(
                 children: [
-                  Center(
+                  const Center(
                     child: Text(
                       'Password Recovery',
                       style: TextStyle(
@@ -92,7 +92,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                     ),
                   ),
-                  Center(
+                  const Center(
                     child: Text(
                       'Enter Your E-mail',
                       style: TextStyle(
@@ -102,17 +102,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20.0,
                   ),
                   Container(
-                    margin:
-                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 20.0),
                     child: Material(
                       elevation: 5.0,
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             vertical: 30.0, horizontal: 20.0),
                         height: MediaQuery.of(context).size.height / 3,
                         width: MediaQuery.of(context).size.width,
@@ -125,7 +125,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Email',
                                 style: TextStyle(
                                   color: Colors.black,
@@ -133,7 +133,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10.0,
                               ),
                               Container(
@@ -146,13 +146,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 ),
                                 child: TextFormField(
                                   controller: userEmailEditingController,
-                                  validator: (Value) {
-                                    if (Value == null || Value.isEmpty) {
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
                                       return 'Please enter your E-Mail.';
                                     }
                                     return null;
                                   },
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     prefixIcon: Icon(
                                       Icons.mail_outline,
@@ -161,7 +161,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   ),
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               GestureDetector(
                                 onTap: () {
                                   if (_formkey.currentState!.validate()) {
@@ -174,19 +174,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   resetPassword();
                                 },
                                 child: Center(
-                                  child: Container(
+                                  child: SizedBox(
                                     width: 130,
                                     child: Material(
                                       borderRadius: BorderRadius.circular(10),
                                       elevation: 5.0,
                                       child: Container(
-                                        padding: EdgeInsets.all(10.0),
+                                        padding: const EdgeInsets.all(10.0),
                                         decoration: BoxDecoration(
-                                          color: Color(0xFF6380FB),
+                                          color: const Color(0xFF6380FB),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
-                                        child: Center(
+                                        child: const Center(
                                           child: Text(
                                             'Send E-mail',
                                             style: TextStyle(
@@ -201,20 +201,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   ),
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                             ],
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 40.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Don\'t have an account?',
                         style: TextStyle(
                           color: Colors.black,
@@ -224,7 +224,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       InkWell(
                         onTap: () => Navigator.pushNamed(
                             context, RouteName.signUpScreen),
-                        child: Text(
+                        child: const Text(
                           ' SignUp Now!',
                           style: TextStyle(
                             color: Color(0xFF7F30FE),

@@ -15,17 +15,45 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool search = false;
   String? myName, myProfilePic, myUserName, myEmail;
+  Stream? chatRoomsStream;
   getthesharedpref() async {
-    myName = await sharedPreferenceHelper().getUserDisplayName();
-    myProfilePic = await sharedPreferenceHelper().getUserPic();
-    myUserName = await sharedPreferenceHelper().getUserName();
-    myEmail = await sharedPreferenceHelper().getUserEmail();
+    myName = await SharedPreferenceHelper().getUserDisplayName();
+    myProfilePic = await SharedPreferenceHelper().getUserPic();
+    myUserName = await SharedPreferenceHelper().getUserName();
+    myEmail = await SharedPreferenceHelper().getUserEmail();
     setState(() {});
   }
 
   ontheload() async {
     await getthesharedpref();
+    chatRoomsStream = await DatabaseMethods().getChatRooms();
     setState(() {});
+  }
+
+  Widget chatRoomList() {
+    return StreamBuilder(
+      stream: chatRoomsStream,
+      builder: (context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: snapshot.data.docs.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot ds = snapshot.data.docs[index];
+                  return ChatRoomListTile(
+                    chatRoomId: ds.id,
+                    lastMessage: ds["lastMessage"],
+                    myUsername: myUserName!,
+                    time: ds["lastMessageSendTs"],
+                  );
+                },
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              );
+      },
+    );
   }
 
   @override
@@ -36,9 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   getChatRoomIdbyUsername(String a, String b) {
     if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      return 'users/$b/$a';
+      // ignore: unnecessary_string_escapes
+      return '$b\_$a';
     } else {
-      return 'users/$a/$b';
+      // ignore: unnecessary_string_escapes
+      return '$a\_$b';
     }
   }
 
@@ -66,15 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } else {
       tempSearchStore = [];
-      queryResultSet.forEach(
-        (element) {
-          if (element['UserName'].startsWith(capitalizedValue)) {
-            setState(() {
-              tempSearchStore.add(element);
-            });
-          }
-        },
-      );
+      for (var element in queryResultSet) {
+        if (element['UserName'].startsWith(capitalizedValue)) {
+          setState(() {
+            tempSearchStore.add(element);
+          });
+        }
+      }
     }
   }
 
@@ -92,10 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Color(0xFF553370),
+        backgroundColor: const Color(0xFF553370),
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Color(0xFF553370),
+          backgroundColor: const Color(0xFF553370),
           title: search
               ? Expanded(
                   child: TextField(
@@ -103,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onChanged: (value) {
                       initiateSearch(value.toUpperCase());
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Search User',
                       hintStyle: TextStyle(
@@ -112,14 +140,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18.0,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 )
-              : Text(
+              : const Text(
                   'Wisper Wave',
                   style: TextStyle(
                     color: Color(0xFFC199CD),
@@ -139,17 +167,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 });
               },
               child: Container(
-                margin: EdgeInsets.only(right: 20.0),
-                padding: EdgeInsets.all(8),
+                margin: const EdgeInsets.only(right: 20.0),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                    color: Color(0xFF3A2144),
+                    color: const Color(0xFF3A2144),
                     borderRadius: BorderRadius.circular(20)),
                 child: search
-                    ? Icon(
+                    ? const Icon(
                         Icons.close,
                         color: Color(0xFFC199CD),
                       )
-                    : Icon(
+                    : const Icon(
                         Icons.search,
                         color: Color(0xFFC199CD),
                       ),
@@ -157,168 +185,40 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: Container(
-          child: Column(
-            children: [
-              Expanded(
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      search
-                          ? ListView(
-                              padding: EdgeInsets.only(
-                                left: 10.0,
-                                right: 10.0,
-                              ),
-                              primary: false,
-                              shrinkWrap: true,
-                              children: tempSearchStore.map((element) {
-                                return buildResultCard(element);
-                              }).toList(),
-                            )
-                          : Column(
-                              children: [
-                                GestureDetector(
-                                  // onTap: () => Navigator.pushNamed(
-                                  //     context, RouteName.chatScreen),
-                                  child: Container(
-                                    color: Colors.white,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(60),
-                                          child: Image.asset(
-                                            'assets/images/boy1.jpg',
-                                            height: 70,
-                                            width: 70,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20.0,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Text(
-                                              'Junaid1',
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Hello, what are you doing?',
-                                              style: TextStyle(
-                                                color: Colors.black45,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          '4:30 PM',
-                                          style: TextStyle(
-                                            color: Colors.black45,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 30.0,
-                                ),
-                                GestureDetector(
-                                  // onTap: () => Navigator.pushNamed(
-                                  //     context, RouteName.chatScreen),
-                                  child: Container(
-                                    color: Colors.white,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(60),
-                                          child: Image.asset(
-                                            'assets/images/boy2.jpg',
-                                            height: 70,
-                                            width: 70,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20.0,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Text(
-                                              'Junaid2',
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            Text(
-                                              'You Alive?',
-                                              style: TextStyle(
-                                                color: Colors.black45,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          '4:30 PM',
-                                          style: TextStyle(
-                                            color: Colors.black45,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ],
+        body: Column(
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 30.0, horizontal: 20.0),
+                width: MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
                 ),
+                child: Column(
+                  children: [
+                    search
+                        ? ListView(
+                            padding: const EdgeInsets.only(
+                              left: 10.0,
+                              right: 10.0,
+                            ),
+                            primary: false,
+                            shrinkWrap: true,
+                            children: tempSearchStore.map((element) {
+                              return buildResultCard(element);
+                            }).toList(),
+                          )
+                        : chatRoomList(),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -327,8 +227,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildResultCard(data) {
     return data == null
         ? Container(
-            margin: EdgeInsets.symmetric(vertical: 8),
-            child: Center(
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            child: const Center(
               child: CircularProgressIndicator(),
             ),
           )
@@ -342,9 +242,9 @@ class _HomeScreenState extends State<HomeScreen> {
               await DatabaseMethods()
                   .createChatRoom(chatRoomId, chatRoomInfoMap);
               search = false;
-              // setState(() {});
-              // queryResultSet = [];
-              // tempSearchStore = [];
+              setState(() {});
+              queryResultSet = [];
+              tempSearchStore = [];
               Navigator.pushNamed(
                 context,
                 RouteName.chatScreen,
@@ -356,12 +256,12 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 8),
+              margin: const EdgeInsets.symmetric(vertical: 8),
               child: Material(
                 elevation: 5.0,
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
-                  padding: EdgeInsets.all(18),
+                  padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -377,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20.0,
                       ),
                       Column(
@@ -385,18 +285,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Text(
                             data["Name"],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8.0,
                           ),
                           Text(
                             data["UserName"],
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 15.0,
                                 fontWeight: FontWeight.w500),
@@ -409,5 +309,118 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           );
+  }
+}
+
+class ChatRoomListTile extends StatefulWidget {
+  final String? lastMessage, chatRoomId, myUsername, time;
+  const ChatRoomListTile(
+      {super.key,
+      required this.chatRoomId,
+      required this.lastMessage,
+      required this.myUsername,
+      required this.time});
+
+  @override
+  State<ChatRoomListTile> createState() => _ChatRoomListTileState();
+}
+
+class _ChatRoomListTileState extends State<ChatRoomListTile> {
+  String name = "", profileUrl = "", username = "", id = "";
+  getThisUserInfo() async {
+    username = widget.chatRoomId!
+        .replaceAll("_", "")
+        .replaceAll(widget.myUsername!, "");
+    QuerySnapshot querySnapshot =
+        await DatabaseMethods().getUserInfo(username.toUpperCase());
+    name = "${querySnapshot.docs[0]["Name"]}";
+    profileUrl = "${querySnapshot.docs[0]["Photo"]}";
+    id = "${querySnapshot.docs[0]["Id"]}";
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getThisUserInfo();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(
+        context,
+        RouteName.chatScreen,
+        arguments: {
+          'name': name,
+          'profileUrl': profileUrl,
+          'username': username,
+        },
+      ),
+      child: Container(
+        color: Colors.white,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            profileUrl == ""
+                ? const CircularProgressIndicator()
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(60),
+                    child: Image.network(
+                      profileUrl,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+            const SizedBox(
+              width: 20.0,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    username,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 4.0,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.lastMessage!,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.black45,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        widget.time!,
+                        style: const TextStyle(
+                          color: Colors.black45,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
