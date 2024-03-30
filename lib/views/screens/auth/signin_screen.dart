@@ -15,11 +15,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  String email = "",
-      password = "",
-      name = "",
-      username = "",
-      id = ""; //, pic = "";
+  String email = "", password = "", name = "", username = "", id = "", pic = "";
   TextEditingController userEmailEditingController =
       new TextEditingController();
   TextEditingController userPasswordEditingController =
@@ -34,7 +30,7 @@ class _SignInScreenState extends State<SignInScreen> {
       if (querySnapshot.docs.isNotEmpty) {
         name = "${querySnapshot.docs[0]["Name"]}";
         username = "${querySnapshot.docs[0]["UserName"]}";
-        // pic = "${querySnapshot.docs[0]["Photo"]}";
+        pic = "${querySnapshot.docs[0]["Photo"]}";
         id = querySnapshot.docs[0].id;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -50,7 +46,7 @@ class _SignInScreenState extends State<SignInScreen> {
       await sharedPreferenceHelper().savedUserDisplayName(name);
       await sharedPreferenceHelper().savedUserName(username);
       await sharedPreferenceHelper().savedUserId(id);
-      // await sharedPreferenceHelper().savedUserPic(pic);
+      await sharedPreferenceHelper().savedUserPic(pic);
       Navigator.pushNamed(context, RouteName.homeScreen);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -90,7 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
+      canPop: false,
       onPopInvoked: (didPop) async {
         SystemNavigator.pop();
       },

@@ -28,11 +28,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
         String id = randomAlphaNumeric(10);
+        String user = emailEditingController.text.replaceAll("@gmail.com", "");
+        String updateusername =
+            user.replaceFirst(user[0], user[0].toUpperCase());
+        String firstletter = user.substring(0, 1).toUpperCase();
         Map<String, dynamic> userInfoMap = {
           'Name': nameEditingController.text,
           "Email": emailEditingController.text,
-          'UserName': emailEditingController.text.replaceAll("@gmail.com", ""),
-          // 'Photo': "",
+          'UserName': updateusername.toUpperCase(),
+          "SearchKey": firstletter,
+          'Photo':
+              "https://firebasestorage.googleapis.com/v0/b/barberapp-ebcc1.appspot.com/o/icon1.png?alt=media&token=0fad24a5-a01b-4d67-b4a0-676fbc75b34a",
           'Id': id,
         };
         await DatabaseMethods().addUserDetails(userInfoMap, id);
@@ -41,7 +47,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             emailEditingController.text.replaceAll("@gmail.com", ""));
         await sharedPreferenceHelper()
             .savedUserEmail(emailEditingController.text);
-        // await sharedPreferenceHelper().savedUserPic("");
+        await sharedPreferenceHelper().savedUserPic(
+            "https://firebasestorage.googleapis.com/v0/b/barberapp-ebcc1.appspot.com/o/icon1.png?alt=media&token=0fad24a5-a01b-4d67-b4a0-676fbc75b34a");
         await sharedPreferenceHelper()
             .savedUserDisplayName(nameEditingController.text);
         ScaffoldMessenger.of(context).showSnackBar(

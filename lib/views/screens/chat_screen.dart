@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final String? name, profileurl, username;
+  const ChatScreen(
+      {super.key,
+      required this.name,
+      required this.profileurl,
+      required this.username});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -21,7 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
           icon: Icon(Icons.arrow_back_ios_new_outlined),
         ),
         title: Text(
-          'Junaid1',
+          widget.name ?? 'rffffffffffffff',
         ),
         centerTitle: true,
         titleTextStyle: TextStyle(

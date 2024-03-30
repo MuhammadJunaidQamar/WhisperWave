@@ -20,7 +20,15 @@ class Routes {
         return MaterialPageRoute(builder: (context) => const HomeScreen());
 
       case RouteName.chatScreen:
-        return MaterialPageRoute(builder: (context) => const ChatScreen());
+        Map<String, dynamic> arguments =
+            settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => ChatScreen(
+            name: arguments['name'],
+            profileurl: arguments['profileurl'],
+            username: arguments['username'],
+          ),
+        );
 
       case RouteName.forgotPasswordScreen:
         return MaterialPageRoute(
