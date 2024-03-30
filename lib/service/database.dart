@@ -37,4 +37,31 @@ class DatabaseMethods {
           .set(chatRoomInfoMap);
     }
   }
+
+  Future addMessage(String chatRoomId, String messageID,
+      Map<String, dynamic> messageInfoMap) async {
+    return FirebaseFirestore.instance
+        .collection("chatrooms")
+        .doc(chatRoomId)
+        .collection("chats")
+        .doc(messageID)
+        .set(messageInfoMap);
+  }
+
+  updateLastMessageSend(
+      String chatRoomId, Map<String, dynamic> lastMessageInfoMap) {
+    return FirebaseFirestore.instance
+        .collection("chatrooms")
+        .doc(chatRoomId)
+        .update(lastMessageInfoMap);
+  }
+
+  Future<Stream<QuerySnapshot>> getChatRoomMessages(chatRoomId) async {
+    return FirebaseFirestore.instance
+        .collection("chatrooms")
+        .doc(chatRoomId)
+        .collection("chats")
+        .orderBy("time", descending: true)
+        .snapshots();
+  }
 }
