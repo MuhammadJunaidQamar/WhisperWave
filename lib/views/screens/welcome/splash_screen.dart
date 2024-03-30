@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> navigateUser() async {
-    await splashScreen.isLogin(context);
+    splashScreen.isLogin(context);
   }
 
   @override

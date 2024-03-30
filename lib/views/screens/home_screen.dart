@@ -125,26 +125,24 @@ class _HomeScreenState extends State<HomeScreen> {
           automaticallyImplyLeading: false,
           backgroundColor: const Color(0xFF553370),
           title: search
-              ? Expanded(
-                  child: TextField(
-                    autofocus: true,
-                    onChanged: (value) {
-                      initiateSearch(value.toUpperCase());
-                    },
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Search User',
-                      hintStyle: TextStyle(
-                        color: Color(0xFFC199CD),
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+              ? TextField(
+                  autofocus: true,
+                  onChanged: (value) {
+                    initiateSearch(value.toUpperCase());
+                  },
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Search User',
+                    hintStyle: TextStyle(
+                      color: Color(0xFFC199CD),
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w500,
                   ),
                 )
               : const Text(

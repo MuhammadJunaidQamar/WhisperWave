@@ -61,14 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
         mainAxisAlignment:
             sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          Text(
-            time,
-            style: const TextStyle(
-              color: Color.fromARGB(255, 122, 122, 122),
-              fontSize: 10.0,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          showTimeText(showBefore: sendByMe, text: time),
           Flexible(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -98,6 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
+          showTimeText(showBefore: !sendByMe, text: time),
         ],
       ),
     );
@@ -235,6 +229,28 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class showTimeText extends StatelessWidget {
+  final bool showBefore;
+  final String text;
+  const showTimeText({
+    super.key,
+    required this.showBefore,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      showBefore ? text : "",
+      style: const TextStyle(
+        color: Color.fromARGB(255, 122, 122, 122),
+        fontSize: 10.0,
+        fontWeight: FontWeight.w500,
       ),
     );
   }
